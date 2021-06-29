@@ -27,7 +27,6 @@ public:
   // Addition operators.
   Polynomial &operator+=(const Polynomial &other)
   {
-
     coefficients.resize(std::max(other.coefficients.size(), coefficients.size()), T());
 
     for (size_t i = 0; i < std::min(coefficients.size(), other.coefficients.size()); ++i)
@@ -56,7 +55,6 @@ public:
   // Substraction operators.
   Polynomial &operator-=(const Polynomial &other)
   {
-
     coefficients.resize(std::max(other.coefficients.size(), coefficients.size()), T());
 
     for (size_t i = 0; i < std::min(coefficients.size(), other.coefficients.size()); ++i)
