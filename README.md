@@ -51,7 +51,7 @@ std::cout << minuend - subtrahend;
 ```
 
 ``` c++
-// multiplier = x^4 + 4x^3 + 3x^2 + 2x + 1.
+// multiplier = 5x^4 + 4x^3 + 3x^2 + 2x + 1.
 Polynomial<int> multiplier({1, 2, 3, 4, 5});
 
 // Output: 25x^4 + 20x^3 + 15x^2 + 10x + 5.
