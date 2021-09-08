@@ -1,24 +1,19 @@
 #pragma once
 
 #include <gtest/gtest.h>
-
 #include <polynomial.hpp>
-
-using ::testing::InitGoogleTest;
-using ::testing::Test;
-using namespace setm;
 
 namespace tests {
 
-class PolynomialTests : public Test {
+class PolynomialTests : public ::testing::Test {
 protected:
     virtual ~PolynomialTests() = default;
 
     void SetUp() override;
 
     struct {
-        Polynomial<int> multiplication;
-        Polynomial<float> additionWithEquality;
+        setm::Polynomial<int> multiplication;
+        setm::Polynomial<float> additionWithEquality;
     } expected;
 };
 
