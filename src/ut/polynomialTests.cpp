@@ -1,11 +1,7 @@
-#include "polynomialTests.hpp"
+#include <polynomial.hpp>
+#include <gtest/gtest.h>
 
-namespace tests {
-
-void PolynomialTests::SetUp() {
-}
-
-TEST_F(PolynomialTests, Equality) {
+TEST(PolynomialTests, Equality) {
     setm::Polynomial<uint> a({ 3 });
     setm::Polynomial<uint> b({ 3 });
 
@@ -18,7 +14,7 @@ TEST_F(PolynomialTests, Equality) {
     EXPECT_NE(0, b) << "T != poly";
 }
 
-TEST_F(PolynomialTests, Addition) {
+TEST(PolynomialTests, Addition) {
     {
         setm::Polynomial<float> polynomial({ 2.0, -15.1, 8.17 });
         setm::Polynomial<float> expected({ 3.0, -15.1, 8.17 });
@@ -32,7 +28,7 @@ TEST_F(PolynomialTests, Addition) {
     }
 }
 
-TEST_F(PolynomialTests, Substraction) {
+TEST(PolynomialTests, Substraction) {
     {
         setm::Polynomial<int> first(5);
         setm::Polynomial<int> second(3);
@@ -46,7 +42,7 @@ TEST_F(PolynomialTests, Substraction) {
     }
 }
 
-TEST_F(PolynomialTests, Multiplication) {
+TEST(PolynomialTests, Multiplication) {
     {
         setm::Polynomial<double> multiplier({ 1, 2, 3, 4, 5 });
         setm::Polynomial<double> expected({ 5, 10, 15, 20, 25 });
@@ -61,7 +57,7 @@ TEST_F(PolynomialTests, Multiplication) {
     }
 }
 
-TEST_F(PolynomialTests, Division) {
+TEST(PolynomialTests, Division) {
     setm::Polynomial<double> dividend(10.04);
     setm::Polynomial<double> divisor(2);
     setm::Polynomial<double> expected(5.02);
@@ -70,7 +66,7 @@ TEST_F(PolynomialTests, Division) {
     EXPECT_EQ((dividend / divisor), expected) << "poly / poly";
 }
 
-TEST_F(PolynomialTests, Subscription) {
+TEST(PolynomialTests, Subscription) {
     std::vector<int> coefficients{ 0, 1, 2, 3 };
 
     // Non-const polynomial [].
@@ -88,17 +84,10 @@ TEST_F(PolynomialTests, Subscription) {
     }
 }
 
-TEST_F(PolynomialTests, Unary) {
+TEST(PolynomialTests, Unary) {
     setm::Polynomial<double> poly({ -5.5, 4.4, -3.3, 2.2, -1.1, 0 });
     setm::Polynomial<double> negativePoly({ 5.5, -4.4, 3.3, -2.2, 1.1, 0 });
 
     EXPECT_EQ(+poly, poly) << "+poly";
     EXPECT_EQ(-poly, negativePoly) << "-poly";
 }
-
-TEST_F(PolynomialTests, Bitwise) {
-    setm::Polynomial<double>(5);
-    testing::internal::CaptureStdout();
-}
-
-}  // namespace tests
