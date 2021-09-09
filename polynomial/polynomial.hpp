@@ -18,10 +18,6 @@ public:
         : Polynomial(std::vector<T>({ value })) {
     }
 
-    Polynomial(std::initializer_list<T> &initlist)
-        : coefficients(initlist) {
-    }
-
     // Addition operators.
     Polynomial &operator+=(const Polynomial &other) {
         coefficients.resize(std::max(other.coefficients.size(), coefficients.size()), T());
@@ -71,7 +67,7 @@ public:
     }
 
     friend Polynomial operator-(T value, Polynomial polynomial) {
-        return (polynomial - value);
+        return -(polynomial - value);
     }
 
     // Multiplication operators.
@@ -86,7 +82,7 @@ public:
         }
 
         normalize(temporary);
-        *this = Polynomial(temporary);
+        coefficients = temporary;
         return *this;
     }
 
@@ -107,6 +103,7 @@ public:
     // Division operators.
     Polynomial &operator/=(const Polynomial &other) {
         Polynomial<T> priv(T(0));
+
         while(coefficients.size() >= other.coefficients.size()) {
             T coef = coefficients.back() / other.coefficients.back();
             size_t degree = coefficients.size() - other.coefficients.size();
@@ -116,6 +113,7 @@ public:
             *this -= temporary * other;
             priv += temporary;
         }
+
         coefficients = priv.coefficients;
         return *this;
     }
@@ -136,11 +134,11 @@ public:
 
     // Comparison operators.
     bool operator==(const Polynomial &other) const {
-        return (coefficients == other.coefficients);
+        return std::equal(coefficients.begin(), coefficients.end(), other.coefficients.begin());
     }
 
     bool operator!=(const Polynomial &other) const {
-        return (coefficients != other.coefficients);
+        return !(*this == other);
     }
 
     bool operator==(const T &other) const {
@@ -171,6 +169,7 @@ public:
         return Polynomial(*this);
     }
 
+    // Subscript operators.
     T &operator[](const size_t index) {
         return coefficients[index];
     }
@@ -235,15 +234,7 @@ private:
 
     // Comparing two numbers.
     bool isEqual(const T &a, const T &b) {
-        return a == b;
-    }
-
-    bool isEqual(double &a, double &b) {
-        return std::fabs(a - b) < std::numeric_limits<double>::epsilon();
-    }
-
-    bool isEqual(float &a, float &b) {
-        return std::fabs(a - b) < std::numeric_limits<float>::epsilon();
+        return std::fabs(a - b) <= std::numeric_limits<T>::epsilon();
     }
 
     // Normalizes the polynomial by removing the side zeros.
