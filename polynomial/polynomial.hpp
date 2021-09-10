@@ -3,43 +3,46 @@
 #include <cmath>
 
 #include <algorithm>
+#include <initializer_list>
+#include <iterator>
+#include <string>
 #include <sstream>
+#include <type_traits>
 #include <vector>
 
 namespace setm {
 
 template<class T>
 class Polynomial {
+    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
+
 public:
-    Polynomial(const std::vector<T> &data)
-        : coefficients(data) {
+    Polynomial(std::initializer_list<T> data)
+        : coefficients{ data } {
         normalize(coefficients);
     }
 
-    Polynomial(const T &value = T())
-        : Polynomial(std::vector<T>({ value })) {
+    template<class InputIt>
+    Polynomial(InputIt first, InputIt last)
+        : coefficients{ first, last } {
+        normalize(coefficients);
     }
 
     // Addition operators.
     Polynomial &operator+=(const Polynomial &other) {
-        coefficients.resize(std::max(other.coefficients.size(), coefficients.size()), T());
-
-        for(size_t i = 0; i < std::min(coefficients.size(), other.coefficients.size()); ++i) {
-            coefficients[i] += other.coefficients[i];
-        }
-
+        std::transform(coefficients.cbegin(), coefficients.cend(), other.coefficients.cbegin(), coefficients.begin(), std::plus<>{});
         normalize(coefficients);
         return *this;
     }
 
-    Polynomial operator+(const Polynomial &other) {
-        Polynomial result(coefficients);
+    Polynomial operator+(const Polynomial &other) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
         return (result += other);
     }
 
-    Polynomial operator+(T value) {
-        Polynomial result(coefficients);
-        return (result += Polynomial(value));
+    Polynomial operator+(T value) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
+        return (result += Polynomial{ value });
     }
 
     friend Polynomial operator+(T value, Polynomial polynomial) {
@@ -48,24 +51,19 @@ public:
 
     // Substraction operators.
     Polynomial &operator-=(const Polynomial &other) {
-        coefficients.resize(std::max(other.coefficients.size(), coefficients.size()), T());
-
-        for(size_t i = 0; i < std::min(coefficients.size(), other.coefficients.size()); ++i) {
-            coefficients[i] -= other.coefficients[i];
-        }
-
+        std::transform(coefficients.cbegin(), coefficients.cend(), other.coefficients.cbegin(), coefficients.begin(), std::minus<>{});
         normalize(coefficients);
         return *this;
     }
 
-    Polynomial operator-(Polynomial &other) {
-        Polynomial result(coefficients);
+    Polynomial operator-(const Polynomial &other) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
         return (result -= other);
     }
 
-    Polynomial operator-(T value) {
-        Polynomial result(coefficients);
-        return (result -= Polynomial(value));
+    Polynomial operator-(T value) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
+        return (result -= Polynomial{ value });
     }
 
     friend Polynomial operator-(T value, Polynomial polynomial) {
@@ -84,99 +82,98 @@ public:
         }
 
         normalize(temporary);
-        coefficients = temporary;
+        coefficients = std::move(temporary);
         return *this;
     }
 
-    Polynomial operator*(const Polynomial &other) {
-        Polynomial result(coefficients);
+    Polynomial operator*(const Polynomial &other) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
         return (result *= other);
     }
 
-    Polynomial operator*(T value) {
-        Polynomial result(coefficients);
-        return (result *= Polynomial(value));
+    Polynomial operator*(T value) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
+        return (result *= Polynomial({ value }));
     }
 
-    friend Polynomial operator*(T value, Polynomial polynomial) {
-        return (polynomial * value);
+    friend Polynomial operator*(T value, const Polynomial &polynomial) {
+        return (polynomial * Polynomial({ value }));
     }
 
     // Division operators.
     Polynomial &operator/=(const Polynomial &other) {
-        Polynomial<T> priv(T(0));
+        Polynomial<T> priv({ T(0) });
 
         while(coefficients.size() >= other.coefficients.size()) {
             T coef = coefficients.back() / other.coefficients.back();
             size_t degree = coefficients.size() - other.coefficients.size();
             std::vector<T> div(degree + 1);
             div.back() = coef;
-            Polynomial<T> temporary(div);
+            Polynomial<T> temporary(div.cbegin(), div.cend());
             *this -= temporary * other;
             priv += temporary;
         }
 
-        coefficients = priv.coefficients;
+        coefficients = std::move(priv.coefficients);
         return *this;
     }
 
-    Polynomial operator/(const Polynomial &other) {
-        Polynomial result(coefficients);
+    Polynomial operator/(const Polynomial &other) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
         return (result /= other);
     }
 
-    Polynomial operator/(T value) {
-        Polynomial result(coefficients);
-        return (result /= Polynomial(value));
+    Polynomial operator/(T value) const {
+        Polynomial result{ coefficients.cbegin(), coefficients.cend() };
+        return (result /= Polynomial({ value }));
     }
 
-    friend Polynomial operator/(T value, Polynomial polynomial) {
-        return (Polynomial(value) / polynomial);
+    friend Polynomial operator/(T value, const Polynomial &polynomial) {
+        return (Polynomial({ value }) / polynomial);
     }
 
     // Comparison operators.
-    bool operator==(const Polynomial &other) const {
-        return std::equal(coefficients.begin(), coefficients.end(), other.coefficients.begin());
+    bool operator==(const Polynomial &other) const noexcept {
+        return std::equal(coefficients.cbegin(), coefficients.cend(), other.coefficients.begin());
     }
 
-    bool operator!=(const Polynomial &other) const {
+    bool operator!=(const Polynomial &other) const noexcept {
         return !(*this == other);
     }
 
-    bool operator==(const T &other) const {
-        return *this == Polynomial(other);
+    bool operator==(const T other) const {
+        return *this == Polynomial({ other });
     }
 
-    bool operator!=(const T &other) const {
-        return *this != Polynomial(other);
+    bool operator!=(const T other) const {
+        return *this != Polynomial({ other });
     }
 
-    friend bool operator==(const T &other, const Polynomial &polynomial) {
+    friend bool operator==(const T other, const Polynomial &polynomial) {
         return polynomial == other;
     }
 
-    friend bool operator!=(const T &other, const Polynomial &polynomial) {
+    friend bool operator!=(const T other, const Polynomial &polynomial) {
         return polynomial != other;
     }
 
     // Unary operators.
     Polynomial operator-() const {
         Polynomial result{ *this };
-        for(auto &el : result.coefficients)
-            el *= -1;
+        std::transform(result.coefficients.cbegin(), result.coefficients.cend(), result.coefficients.begin(), std::negate<>{});
         return result;
     }
 
     Polynomial operator+() const {
-        return Polynomial(*this);
+        return *this;
     }
 
     // Subscript operators.
-    T &operator[](const size_t index) {
+    T &operator[](size_t index) noexcept {
         return coefficients[index];
     }
 
-    const T &operator[](const size_t index) const {
+    T operator[](size_t index) const {
         return coefficients[index];
     }
 
@@ -220,33 +217,53 @@ public:
     }
 
     friend std::istream &operator>>(std::istream &in, Polynomial &polynomial) {
-        T value;
-        while(true) {
-            in >> value;
-            polynomial.coefficients.push_back(value);
-            if(in.get() == '\n') {
-                return in;
-            }
+        polynomial.coefficients.clear();
+        std::string line{};
+
+        if(std::getline(in, line)) {
+            std::istringstream iss{ line };
+            std::copy(std::istream_iterator<int>{ iss },
+                      std::istream_iterator<int>(),
+                      std::back_inserter(polynomial.coefficients));
         }
+
         return in;
+    }
+
+    // Random access iterators.
+    auto begin() noexcept {
+        return coefficients.begin();
+    }
+
+    auto end() noexcept {
+        return coefficients.end();
+    }
+
+    auto cbegin() const noexcept {
+        return coefficients.cbegin();
+    }
+
+    auto cend() const noexcept {
+        return coefficients.cend();
     }
 
 private:
     std::vector<T> coefficients;
 
-    // Comparing two numbers.
-    bool isEqual(const T &a, const T &b) {
+    // Comparing two numbers using SFINAE .
+    template<typename U = T>
+    std::enable_if_t<std::is_integral_v<U>, bool> isEqual(U a, U b) const noexcept {
+        return a == b;
+    }
+
+    template<typename U = T>
+    std::enable_if_t<std::is_floating_point_v<U>, bool> isEqual(U a, U b) const noexcept {
         return std::fabs(a - b) <= std::numeric_limits<T>::epsilon();
     }
 
     // Normalizes the polynomial by removing the side zeros.
     void normalize(std::vector<T> &coefs) {
-        while(!coefs.empty()) {
-            if(!isEqual(coefs.back(), T())) {
-                return;
-            }
-            coefs.pop_back();
-        }
+        coefs.erase(std::find_if(coefs.rbegin(), coefs.rend(), [](auto v) { return 0 != v; }).base(), coefs.end());
     }
 };
 
