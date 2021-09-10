@@ -250,17 +250,6 @@ public:
 private:
     std::vector<T> coefficients;
 
-    // Comparing two numbers using SFINAE .
-    template<typename U = T>
-    std::enable_if_t<std::is_integral_v<U>, bool> isEqual(U a, U b) const noexcept {
-        return a == b;
-    }
-
-    template<typename U = T>
-    std::enable_if_t<std::is_floating_point_v<U>, bool> isEqual(U a, U b) const noexcept {
-        return std::fabs(a - b) <= std::numeric_limits<T>::epsilon();
-    }
-
     // Normalizes the polynomial by removing the side zeros.
     void normalize(std::vector<T> &coefs) {
         coefs.erase(std::find_if(coefs.rbegin(), coefs.rend(), [](auto v) { return 0 != v; }).base(), coefs.end());
