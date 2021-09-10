@@ -1,4 +1,5 @@
 #include <polynomial.hpp>
+
 #include <gtest/gtest.h>
 
 TEST(PolynomialTests, Equality) {
