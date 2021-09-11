@@ -1,11 +1,13 @@
+#include <cstdint>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <polynomial.hpp>
 
 TEST(PolynomialTests, Equality) {
-    const setm::Polynomial<uint> a({ 3 });
-    const setm::Polynomial<uint> b({ 3 });
+    const setm::Polynomial<uint32_t> a{ 3 };
+    const setm::Polynomial<uint32_t> b{ 3 };
 
     EXPECT_EQ(a, b) << "poly == poly";
     EXPECT_EQ(a, 3) << "poly == T";
