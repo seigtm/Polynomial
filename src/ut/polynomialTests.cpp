@@ -1,7 +1,7 @@
-#include <polynomial.hpp>
-
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+
+#include <polynomial.hpp>
 
 TEST(PolynomialTests, Equality) {
     const setm::Polynomial<uint> a({ 3 });
@@ -69,18 +69,19 @@ TEST(PolynomialTests, Division) {
 }
 
 TEST(PolynomialTests, Subscription) {
-    std::vector<int> coefficients{ 0, 1, 2, 3 };
+    const std::vector<int> coefficients{ 0, 1, 2, 3 };
 
     // Non-const polynomial [].
-    setm::Polynomial<int> poly{ coefficients.begin(), coefficients.end() };
-    EXPECT_THAT(coefficients, ::testing::ContainerEq(poly)) << "Containers not equal!";
+    setm::Polynomial<int> poly{ coefficients.cbegin(), coefficients.cend() };
+    EXPECT_THAT(coefficients, ::testing::ElementsAreArray(poly.cbegin(), poly.cend()));
 
     poly[0] = 5;
     EXPECT_EQ(poly[0], 5) << "poly[0] = 5";
 
     // Const polynomial [].
-    // setm::Polynomial<int> constPoly{ coefficients.cbegin(), coefficients.cend() };
-    // EXPECT_THAT(coefficients, ::testing::ContainerEq(constPoly));
+    const setm::Polynomial<int> constPoly{ coefficients.cbegin(), coefficients.cend() };
+    EXPECT_EQ(constPoly[0], 0) << "poly[0] == 0";
+    EXPECT_THAT(coefficients, ::testing::ElementsAreArray(constPoly.cbegin(), constPoly.cend()));
 }
 
 TEST(PolynomialTests, Unary) {
