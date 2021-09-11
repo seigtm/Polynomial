@@ -17,6 +17,17 @@ class Polynomial {
     static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
 
 public:
+    using value_type = T;
+    using reference = typename std::vector<T>::reference;
+    using const_reference = typename std::vector<T>::const_reference;
+    using pointer = typename std::vector<T>::pointer;
+    using const_pointer = typename std::vector<T>::const_pointer;
+    using iterator = typename std::vector<T>::iterator;
+    using const_iterator = typename std::vector<T>::const_iterator;
+
+    Polynomial(T data = T(0))
+        : coefficients{ data } {}
+
     Polynomial(std::initializer_list<T> data)
         : coefficients{ data } {
         normalize(coefficients);
@@ -222,8 +233,8 @@ public:
 
         if(std::getline(in, line)) {
             std::istringstream iss{ line };
-            std::copy(std::istream_iterator<int>{ iss },
-                      std::istream_iterator<int>(),
+            std::copy(std::istream_iterator<T>{ iss },
+                      std::istream_iterator<T>(),
                       std::back_inserter(polynomial.coefficients));
         }
 
@@ -235,16 +246,28 @@ public:
         return coefficients.begin();
     }
 
-    auto end() noexcept {
-        return coefficients.end();
+    auto begin() const noexcept {
+        return coefficients.begin();
     }
 
     auto cbegin() const noexcept {
         return coefficients.cbegin();
     }
 
+    auto end() noexcept {
+        return coefficients.end();
+    }
+
+    auto end() const noexcept {
+        return coefficients.end();
+    }
+
     auto cend() const noexcept {
         return coefficients.cend();
+    }
+
+    auto size() const noexcept {
+        return coefficients.size();
     }
 
 private:
