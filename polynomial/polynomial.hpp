@@ -25,11 +25,11 @@ public:
     using iterator = typename std::vector<T>::iterator;
     using const_iterator = typename std::vector<T>::const_iterator;
 
-    Polynomial(T data = T(0))
-        : coefficients{ data } {}
+    Polynomial(const T value = T(0))
+        : coefficients{ value } {}
 
-    Polynomial(std::initializer_list<T> data)
-        : coefficients{ data } {
+    Polynomial(std::initializer_list<T> init)
+        : coefficients{ init } {
         normalize(coefficients);
     }
 
@@ -104,11 +104,11 @@ public:
 
     Polynomial operator*(T value) const {
         Polynomial result{ coefficients.cbegin(), coefficients.cend() };
-        return (result *= Polynomial({ value }));
+        return (result *= Polynomial{ value });
     }
 
     friend Polynomial operator*(T value, const Polynomial &polynomial) {
-        return (polynomial * Polynomial({ value }));
+        return (polynomial * Polynomial{ value });
     }
 
     // Division operators.
@@ -136,11 +136,11 @@ public:
 
     Polynomial operator/(T value) const {
         Polynomial result{ coefficients.cbegin(), coefficients.cend() };
-        return (result /= Polynomial({ value }));
+        return (result /= Polynomial{ value });
     }
 
     friend Polynomial operator/(T value, const Polynomial &polynomial) {
-        return (Polynomial({ value }) / polynomial);
+        return (Polynomial{ value } / polynomial);
     }
 
     // Comparison operators.
@@ -153,11 +153,11 @@ public:
     }
 
     bool operator==(const T other) const {
-        return *this == Polynomial({ other });
+        return *this == Polynomial{ other };
     }
 
     bool operator!=(const T other) const {
-        return *this != Polynomial({ other });
+        return *this != Polynomial{ other };
     }
 
     friend bool operator==(const T other, const Polynomial &polynomial) {
