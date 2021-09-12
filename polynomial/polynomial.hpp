@@ -25,7 +25,7 @@ public:
     using iterator = typename std::vector<T>::iterator;
     using const_iterator = typename std::vector<T>::const_iterator;
 
-    Polynomial(const T value = T(0))
+    Polynomial(const T &value = T(0))
         : coefficients{ value } {}
 
     Polynomial(std::initializer_list<T> init)
