@@ -25,7 +25,7 @@ public:
     using iterator = typename std::vector<T>::iterator;
     using const_iterator = typename std::vector<T>::const_iterator;
 
-    Polynomial(const T &value = T(0))
+    explicit Polynomial(T value = T(0))
         : coefficients{ value } {}
 
     Polynomial(std::initializer_list<T> init)
@@ -41,6 +41,7 @@ public:
 
     // Addition operators.
     Polynomial &operator+=(const Polynomial &other) {
+        coefficients.resize(std::max(other.coefficients.size(), coefficients.size()));
         std::transform(coefficients.cbegin(), coefficients.cend(), other.coefficients.cbegin(), coefficients.begin(), std::plus<>{});
         normalize(coefficients);
         return *this;
@@ -62,6 +63,7 @@ public:
 
     // Substraction operators.
     Polynomial &operator-=(const Polynomial &other) {
+        coefficients.resize(std::max(other.coefficients.size(), coefficients.size()));
         std::transform(coefficients.cbegin(), coefficients.cend(), other.coefficients.cbegin(), coefficients.begin(), std::minus<>{});
         normalize(coefficients);
         return *this;
@@ -220,7 +222,7 @@ public:
             strout << " ";
         }
 
-        if(polynomial.coefficients.size() == 0)
+        if(polynomial.coefficients.empty())
             strout << 0;
 
         out << strout.str();
