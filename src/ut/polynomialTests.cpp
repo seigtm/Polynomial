@@ -87,8 +87,8 @@ TEST(PolynomialTests, Subscription) {
 }
 
 TEST(PolynomialTests, Unary) {
-    setm::Polynomial<double> poly{ -5.5, 4.4, -3.3, 2.2, -1.1, 0 };
-    setm::Polynomial<double> negativePoly{ 5.5, -4.4, 3.3, -2.2, 1.1, 0 };
+    const setm::Polynomial<double> poly{ -5.5, 4.4, -3.3, 2.2, -1.1, 0 };
+    const setm::Polynomial<double> negativePoly{ 5.5, -4.4, 3.3, -2.2, 1.1, 0 };
 
     EXPECT_EQ(+poly, poly) << "+poly";
     EXPECT_EQ(-poly, negativePoly) << "-poly";

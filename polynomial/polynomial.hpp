@@ -152,20 +152,20 @@ public:
         return !(*this == other);
     }
 
-    bool operator==(const T other) const {
+    bool operator==(T other) const noexcept {
         return *this == Polynomial{ other };
     }
 
-    bool operator!=(const T other) const {
-        return *this != Polynomial{ other };
+    bool operator!=(T other) const noexcept {
+        return !(*this == Polynomial{ other });
     }
 
-    friend bool operator==(const T other, const Polynomial &polynomial) {
+    friend bool operator==(T other, const Polynomial &polynomial) noexcept {
         return polynomial == other;
     }
 
-    friend bool operator!=(const T other, const Polynomial &polynomial) {
-        return polynomial != other;
+    friend bool operator!=(T other, const Polynomial &polynomial) noexcept {
+        return !(polynomial == other);
     }
 
     // Unary operators.
