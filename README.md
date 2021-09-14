@@ -68,7 +68,7 @@ std::cout << std::boolalpha << (first == (second + 1));
 ## Cloning the repository:
 
 ```bash
-bash> git clone git@github.com:seigtm/Polynomial.git
+bash> git clone https://github.com/seigtm/Polynomial
 ```
 
 ---
