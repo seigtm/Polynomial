@@ -7,14 +7,35 @@
 #include <iterator>
 #include <string>
 #include <sstream>
-#include <type_traits>
 #include <vector>
+
+#include <boost/type_traits.hpp>
 
 namespace setm {
 
 template<class T>
 class Polynomial {
-    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
+    // Polynomial class template parameter
+    //  must support all of the operations listed below.
+    // TODO: Check if bitwise operator << and >> are supported by T (input/output).
+    static_assert(
+        // Arithmetic.
+        boost::has_plus<T>{} &&
+            boost::has_minus<T>{} &&
+            boost::has_multiplies<T>{} &&
+            boost::has_divides<T>{} &&
+            // Assign.
+            boost::has_plus_assign<T>{} &&
+            boost::has_minus_assign<T>{} &&
+            boost::has_multiplies_assign<T>{} &&
+            boost::has_divides_assign<T>{} &&
+            // Unary.
+            boost::has_unary_minus<T>{} &&
+            boost::has_unary_plus<T>{} &&
+            // Equality.
+            boost::has_equal_to<T>{} &&
+            boost::has_not_equal_to<T>{},
+        "T must support arithmetic, assign, unary and equality operators!");
 
 public:
     using value_type = T;
