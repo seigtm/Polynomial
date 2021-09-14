@@ -7,7 +7,6 @@
 #include <iterator>
 #include <string>
 #include <sstream>
-#include <type_traits>
 #include <vector>
 
 #include <boost/type_traits.hpp>
