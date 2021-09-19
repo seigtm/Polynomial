@@ -91,7 +91,7 @@ To install with `conan`, execute the commands:
 
 ```bash
 bash> cd Polynomial
-bash> conan instal . -if build --build missing
+bash> conan install . -if build --build missing
 ```
 
 To build and run the project with `cmake`, execute:
