@@ -7,6 +7,7 @@
 #include <iterator>
 #include <string>
 #include <sstream>
+#include <type_traits>
 #include <vector>
 
 #include <boost/type_traits.hpp>
@@ -215,7 +216,6 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const Polynomial &polynomial) {
         size_t power{ polynomial.coefficients.size() - 1 };
         bool firstIteration{ true };
-        std::stringstream strout{};
 
         for(auto iter = polynomial.coefficients.rbegin(); iter != polynomial.coefficients.rend(); ++iter, --power) {
             T koef = *iter;
@@ -223,30 +223,39 @@ public:
             if(koef == T())
                 continue;
 
-            if(koef > T()) {
-                if(!firstIteration) {
-                    strout << "+ ";
+            if constexpr(std::is_arithmetic_v<T>) {
+                if(koef > T()) {
+                    if(!firstIteration) {
+                        out << "+ ";
+                    }
+                } else {
+                    out << "- ";
                 }
             } else {
-                strout << "- ";
+                if(!firstIteration) {
+                    out << "+ ";
+                }
             }
 
             firstIteration = false;
 
-            if((koef != T(1) && koef != T(-1)) || power == 0)
-                strout << fabs(koef);
-
-            if(power != 0) {
-                strout << ((power == 1) ? "x" : "x^" + std::to_string(power));
+            if constexpr(std::is_arithmetic_v<T>) {
+                if((koef != T(1) && koef != T(-1)) || power == 0)
+                    out << fabs(koef);
+            } else {
+                out << koef;
             }
 
-            strout << " ";
+            if(power != 0) {
+                out << ((power == 1) ? "x" : "x^" + std::to_string(power));
+            }
+
+            out << " ";
         }
 
         if(polynomial.coefficients.empty())
-            strout << 0;
+            out << 0;
 
-        out << strout.str();
         return out;
     }
 
