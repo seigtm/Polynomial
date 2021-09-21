@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
+add_subdirectory(polynomial)
+
 add_executable(main src/main.cpp src/ut/polynomialTests.cpp)
 target_include_directories(main
         PUBLIC
