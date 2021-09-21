@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 
 class Polynomial(ConanFile):
     name = "Polynomial"
-    version = "1.0.3"
+    version = "1.0.4"
     author = "Baranov Konstantin (seigtm@gmail.com)"
     url = "https://github.com/seigtm/Polynomial"
     description = "A simple polynomial class that supports all basic operations"
