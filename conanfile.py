@@ -8,7 +8,7 @@ class Polynomial(ConanFile):
     url = "https://github.com/seigtm/Polynomial"
     description = "A simple polynomial class that supports all basic operations"
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake"
+    generators = "cmake", "visual_studio"
 
     requires = \
         "boost/[1.77.0]"

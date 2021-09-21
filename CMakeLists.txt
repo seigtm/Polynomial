@@ -17,8 +17,10 @@ target_include_directories(main
 target_link_libraries(main PRIVATE CONAN_PKG::gtest CONAN_PKG::boost)
 message("!- Conan libs: ${CONAN_LIBS}")
 
-# Turn off optimization for non-skewed coverage reports.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
-include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
-append_coverage_compiler_flags()
-setup_target_for_coverage_gcovr_html(NAME maincov EXECUTABLE main)
+if (CODE_COVERAGE)
+    message("!- Using code coverage")
+    # Use CodeCoverage for coverage reports.
+    include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_gcovr_html(NAME maincov EXECUTABLE main)
+endif()
