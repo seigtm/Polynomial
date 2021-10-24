@@ -40,8 +40,8 @@ TEST(PolynomialTests, Substraction) {
     }
     {
         const setm::Polynomial<float> minuend{ 5.1, 15.2, 20.3 };
-        const setm::Polynomial<float> subtrahend{ 0.1, 0.2, 0.3 };
-        const setm::Polynomial<float> expected{ 5, 15, 20 };
+        const setm::Polynomial<float> subtrahend{ 0.1, 0.2 };
+        const setm::Polynomial<float> expected{ 5, 15, 20.3 };
         EXPECT_EQ(minuend - subtrahend, expected) << "poly - poly";
     }
 }
@@ -54,9 +54,9 @@ TEST(PolynomialTests, Multiplication) {
         EXPECT_EQ(multiplier, (expected * 0.2)) << "poly * T";
     }
     {
-        const setm::Polynomial<int> first{ 5 };
+        const setm::Polynomial<int> first{ 5, 2, 4 };
         const setm::Polynomial<int> second{ 3 };
-        const setm::Polynomial<int> expected{ 15 };
+        const setm::Polynomial<int> expected{ 15, 6, 12 };
         EXPECT_EQ(first * second, expected) << "poly * poly";
     }
 }

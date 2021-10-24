@@ -1,6 +1,6 @@
 # CMake basic setup.
 cmake_minimum_required(VERSION 3.5)
-project(Polynomial VERSION 1.0.4 LANGUAGES CXX)
+project(Polynomial VERSION 2.0.0 LANGUAGES CXX)
 message("!- Project: " ${PROJECT_NAME})
 
 # C++ 17 standart required.

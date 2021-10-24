@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 
 class Polynomial(ConanFile):
     name = "Polynomial"
-    version = "1.0.4"
+    version = "2.0.0"
 
     # Metadata.
     author = "Baranov Konstantin (seigtm@gmail.com)"
@@ -32,10 +32,10 @@ class Polynomial(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_folder = self.name)
+        cmake.configure(source_folder=self.name)
         cmake.build()
 
     def package(self):
         cmake = CMake(self)
-        cmake.configure(source_folder = self.name)
+        cmake.configure(source_folder=self.name)
         cmake.install()
