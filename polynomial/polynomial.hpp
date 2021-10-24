@@ -18,7 +18,6 @@ template<class T>
 class Polynomial {
     // Polynomial class template parameter
     //  must support all of the operations listed below.
-    // TODO: Check if bitwise operator << and >> are supported by T (input/output).
     static_assert(
         // Arithmetic.
         boost::has_plus<T>{} &&
@@ -169,7 +168,7 @@ public:
 
     // Comparison operators.
     bool operator==(const Polynomial &other) const noexcept {
-        return std::equal(coefficients.cbegin(), coefficients.cend(), other.coefficients.begin());
+        return coefficients == other.coefficients;
     }
 
     bool operator!=(const Polynomial &other) const noexcept {
