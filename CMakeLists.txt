@@ -1,38 +1,44 @@
 # CMake basic setup.
 cmake_minimum_required(VERSION 3.5)
-project(Polynomial VERSION 2.0.0 LANGUAGES CXX)
-message("!- Project: " ${PROJECT_NAME})
+project(PolynomialExample VERSION 2.0.0 LANGUAGES CXX)
+
+# Build shared gtest library.
+if (NOT BUILD_SHARED_LIBS)
+    set(BUILD_SHARED_LIBS ON)
+endif()
+
+# Linker flag to search for libPolynomial in executable path.
+SET(CMAKE_EXE_LINKER_FLAGS 
+    "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,."
+)
 
 # C++ 17 standart required.
 set(CMAKE_CXX_STANDARD 17)
 
-# Get conan packages (gtest) and conan CMake commands.
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-# Setup all the CMake variables by target.
-# Activate the call to the macro conan_target_link_libraries().
-conan_basic_setup(TARGETS)
-
-# Add the 'polynomial' subdirectory to the build.
+# Add subdirectories to the build.
 add_subdirectory(polynomial)
+add_subdirectory(googletest)
 
-# Add 'main' and 'tests' sources to the main executable.
-add_executable(main src/main.cpp src/ut/polynomialTests.cpp)
+# Add 'main' source to the main executable.
+add_executable(${CMAKE_PROJECT_NAME}
+    main.cpp
+)
 
-# Specifies include directories to use when compiling a given target.
-target_include_directories(main
-        PUBLIC
-            ${PROJECT_SOURCE_DIR}/polynomial
-            ${PROJECT_SOURCE_DIR}/src/ut
+# Link Polynomial lib to the executable.
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+    Polynomial
+)
+
+# Before create "main" build target "Run_PolynomialTests".
+add_dependencies(${CMAKE_PROJECT_NAME} Run_PolynomialTests)
+
+# Deploy project.
+if (DEPLOY)
+    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND "${CMAKE_SOURCE_DIR}/scripts/deploy.sh"
+            "${CMAKE_SOURCE_DIR}/build/PolynomialExample"          # Executable path.
+            "${CMAKE_SOURCE_DIR}/build/polynomial/libPolynomial.so"   # Library path.
+            "${CMAKE_SOURCE_DIR}/deploy"                        # Destination path.
+        COMMENT "Running deploy"
     )
-
-    # Link all libraries to the executable.
-target_link_libraries(main PRIVATE CONAN_PKG::gtest CONAN_PKG::boost)
-message("!- Conan libs: ${CONAN_LIBS}")
-
-if (CODE_COVERAGE)
-    message("!- Using code coverage")
-    # Use CodeCoverage for coverage reports.
-    include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
-    append_coverage_compiler_flags()
-    setup_target_for_coverage_gcovr_html(NAME maincov EXECUTABLE main)
 endif()
